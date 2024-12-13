@@ -59,11 +59,13 @@ jobs:
           curl http://169.254.169.254/latest/meta-data/public-ipv4 > public-ip.txt
           PUBLIC_IP=$(cat public-ip.txt)
           echo "::set-output name=public_ip::$PUBLIC_IP"
+        shell: bash
 
       - name: Run Docker Image for FastAPI and Streamlit
         run: |
           # Run FastAPI
           docker run -d \
+            --add-host=169.254.169.254:host-gateway \
             -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
             -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
             -e AWS_DEFAULT_REGION="${{ secrets.AWS_DEFAULT_REGION }}" \
@@ -73,6 +75,7 @@ jobs:
 
           # Run Streamlit with EC2 Public IP as an Environment Variable
           docker run -d \
+            --add-host=169.254.169.254:host-gateway \
             -p 8501:8501 \
             -e EC2_PUBLIC_IP="${{ steps.get-ip.outputs.public_ip }}" \
             -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
@@ -80,3 +83,4 @@ jobs:
             -e AWS_DEFAULT_REGION="${{ secrets.AWS_DEFAULT_REGION }}" \
             "${{ steps.login-ecr.outputs.registry }}"/"${{ secrets.ECR_REPO }}":latest \
             sh -c "streamlit run streamlit.py --server.port 8501 --server.address 0.0.0.0"
+        shell: bash
