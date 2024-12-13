@@ -4,7 +4,8 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from us_visa.pipline.prediction_pipeline import USvisaData, USvisaClassifier
 from us_visa.pipline.training_pipeline import TrainPipeline
-
+from uvicorn import run as app_run
+from us_visa.constants import APP_HOST, APP_PORT
 app = FastAPI()
 
 # CORS settings
@@ -76,6 +77,6 @@ async def train_model():
 async def root():
     return JSONResponse(content={"message": "Welcome to the US Visa Prediction API!"})
 
+
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    app_run(app, host=APP_HOST, port=APP_PORT)
