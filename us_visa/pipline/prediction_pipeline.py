@@ -13,7 +13,7 @@ from pandas import DataFrame
 
 
 
-class UsvisaData:
+class USvisaData:
     def __init__(self,
                  continent,
                  education_of_employee,
