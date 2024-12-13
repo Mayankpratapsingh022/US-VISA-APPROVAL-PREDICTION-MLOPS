@@ -2,8 +2,28 @@ import streamlit as st
 import requests
 
 # Base URL of the FastAPI endpoint
-API_URL = "http://localhost:8000/predict"
+# Function to get the current public IP of the EC2 instance
+def get_public_ip():
+    try:
+        response = requests.get("http://169.254.169.254/latest/meta-data/public-ipv4", timeout=2)
+        if response.status_code == 200:
+            return response.text
+        else:
+            st.error("Unable to retrieve EC2 public IP.")
+            return None
+    except Exception as e:
+        st.error(f"Error retrieving EC2 public IP: {str(e)}")
+        return None
 
+# Fetch the public IP dynamically
+public_ip = get_public_ip()
+
+# Set the FastAPI endpoint URL dynamically
+if public_ip:
+    API_URL = f"http://{public_ip}:8080/predict"
+else:
+    API_URL = None
+    
 st.title("US Visa Prediction")
 
 # Form inputs
