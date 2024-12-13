@@ -53,6 +53,13 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Get EC2 Public IP
+        id: get-ip
+        run: |
+          curl http://169.254.169.254/latest/meta-data/public-ipv4 > public-ip.txt
+          PUBLIC_IP=$(cat public-ip.txt)
+          echo "::set-output name=public_ip::$PUBLIC_IP"
+
       - name: Run Docker Image for FastAPI and Streamlit
         run: |
           # Run FastAPI
@@ -63,10 +70,11 @@ jobs:
             -e MONGODB_URL="${{ secrets.MONGODB_URL }}" \
             -p 8080:8080 \
             "${{ steps.login-ecr.outputs.registry }}"/"${{ secrets.ECR_REPO }}":latest
-          
-          # Run Streamlit
+
+          # Run Streamlit with EC2 Public IP as an Environment Variable
           docker run -d \
             -p 8501:8501 \
+            -e EC2_PUBLIC_IP="${{ steps.get-ip.outputs.public_ip }}" \
             -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
             -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
             -e AWS_DEFAULT_REGION="${{ secrets.AWS_DEFAULT_REGION }}" \
