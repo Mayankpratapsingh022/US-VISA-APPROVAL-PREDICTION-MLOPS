@@ -1,4 +1,4 @@
-name: Deploy Application Docker Image to EC2 instance
+name: Deploy Application using Docker Image to EC2 instance
 
 on:
   push:
