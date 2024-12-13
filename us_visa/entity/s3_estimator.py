@@ -62,4 +62,4 @@ class USvisaEstimator:
                 self.loaded_model = self.load_model()
             return self.loaded_model.predict(dataframe=dataframe)
         except Exception as e:
-            raise USvisaException(e, sys)
+            raise USvisaException(e, sys) 
