@@ -1,7 +1,7 @@
 # US Visa Approval Prediction
 
 This project predicts the approval status of US visa applications using machine learning and deep learning models, integrated with an MLOps pipeline for streamlined deployment.
-
+![Architecture](Flowcharts/usvsa_architecture.gif)
 ## Overview
 Visa applications are often complex and influenced by multiple factors. This project focuses on building a robust model that predicts visa approval based on features like education, job experience, and company-specific information. The project also demonstrates how MLOps practices can be used to deploy and monitor such predictive models effectively.
 
